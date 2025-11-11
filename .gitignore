@@ -1,15 +1,39 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# ================================ #
+# Android & Gradle ignore rules
+# ================================ #
+
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Local settings (SDK path, machine-specific)
 local.properties
+
+# IntelliJ / Android Studio project files
+.idea/
+*.iml
+
+# Cache / Generated folders
+.cxx/
+.externalNativeBuild/
+captures/
+output.json
+
+# Jetpack Compose cache
+.compose-cache/
+
+# OS system files
+.DS_Store
+Thumbs.db
+
+# Keystore files (important!)
+*.jks
+*.keystore
+
+# APK / AAB output
+*.apk
+*.aab
+
+# Misc backups
+*.zip

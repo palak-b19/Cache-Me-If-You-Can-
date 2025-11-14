@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="#F8F8F8">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,49 +11,82 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <ImageView
-            android:id="@+id/appIcon"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal" />
+        <!-- TOP ROW: ICON + NAME -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
+            <ImageView
+                android:id="@+id/appIcon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="16dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/appName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="32sp"
+                    android:textColor="#222222"
+                    android:fontFamily="@font/poppins_semibold" />
+
+                <TextView
+                    android:id="@+id/packageName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#666666"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/poppins_regular" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- PERMISSIONS HEADER -->
         <TextView
-            android:id="@+id/appName"
+            android:id="@+id/permissionsHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp" />
-
-        <TextView
-            android:id="@+id/packageName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:paddingTop="6dp"
-            android:textColor="#666" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Permissions:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingTop="20dp"
+            android:text="Permissions"
+            android:textSize="28sp"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="#222222"
+            android:paddingTop="26dp"
             android:paddingBottom="10dp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#DDDDDD" />
+
+        <!-- PERMISSION LIST -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/permissionsRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false" />
+            android:nestedScrollingEnabled="false"
+            android:layout_marginTop="12dp" />
 
+        <!-- MANAGE PERMISSIONS BUTTON -->
         <Button
             android:id="@+id/managePermissionsBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Manage Permissions"
-            android:layout_marginTop="20dp"
-            android:padding="12dp"/>
+            android:backgroundTint="#333333"
+            android:textColor="#FFFFFF"
+            android:padding="16dp"
+            android:textAllCaps="false"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
+
     </LinearLayout>
+
 </ScrollView>

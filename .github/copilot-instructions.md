@@ -1,33 +1,34 @@
-# Cache-Me-If-You-Can – Copilot Instructions
-Focused guidance for AI agents working in this repo.
+# Cache-Me-If-You-Can AI Instructions
 
-## Big Picture
-- Single-module Android app (`app/`) built with Kotlin 1.9, Gradle 8.2, and SDK 34; `MainActivity` only forwards to `ui/AppListActivity.kt` where the real UX lives.
-- Core flow: enumerate launchable packages with `PackageManager`, wrap them in `models/AppInfo`, list them via `AppListAdapter`, and drill into `AppDetailActivity` to show permissions plus a link to Android's settings page.
+## Project Overview
+Android privacy helper app that analyzes installed applications to provide on-device risk insights using a local LLM (TinyLlama) via ONNX Runtime GenAI, with a heuristic fallback.
 
-## UI + Navigation
-- Activities sit under `com.example.ussdemoproject.ui`; view binding is standard (see `ActivityAppListBinding`/`ActivityAppDetailBinding`) and should be preferred over manual `findViewById`.
-- `AppListAdapter` builds explicit intents with extras `appName` and `packageName`; do not rename these keys because `AppDetailActivity` reads them directly.
-- Recycler card layout is locked in `res/layout/item_app.xml` (ConstraintLayout shell + icon + text column); follow this pattern when adding list rows.
+## Architecture & Core Components
+- **Insight Engine**: `PermissionInsightEngine` (`app/src/main/java/com/example/ussdemoproject/ai/`) is the central orchestrator. It manages:
+  - **Caching**: In-memory `LruCache` (6-hour TTL) to avoid redundant processing.
+  - **Strategy**: Tries LLM first, falls back to heuristics if unavailable/fails.
+- **LLM Client**: `TinyLlamaInsightClient` wraps `onnxruntime-genai`.
+  - **Assets**: Models live in `app/src/main/assets/models/tinyllama/`.
+  - **Prompting**: `TinyLlamaPromptBuilder` constructs strict JSON-output prompts.
+- **UI Layer**: `AppDetailActivity` consumes `PermissionInsightResult` via Kotlin Coroutines (`lifecycleScope`).
 
-## Data + Permissions
-- `AppInfo` is the shared contract between listing and detail screens; extend or reuse it instead of creating parallel DTOs.
-- Distinguish `PackageManager.GET_META_DATA` (used while listing) from `GET_PERMISSIONS` (used while inspecting); keep both wrapped in `try/catch` and default to empty collections to avoid crashes on missing packages.
-- The manifest already claims `android.permission.QUERY_ALL_PACKAGES`; any new package-level inspection must clearly justify or constrain that scope.
+## Critical Developer Workflows
+- **Initial Setup**: You MUST run `scripts/download_tinyllama_assets.ps1` (PowerShell) to fetch the TinyLlama ONNX model and the GenAI AAR.
+  - Without this, the app builds but runs in "Heuristic Only" mode.
+- **Build**: Standard Gradle: `./gradlew.bat assembleDebug`.
+- **Debugging AI**:
+  - Check `TinyLlamaInsightClient.lastKnownIssue()` for runtime errors.
+  - `PermissionInsightResult.Unavailable` or `llmUnavailableReason` in the UI indicates fallback triggers.
 
-## Layout / Binding Conventions
-- `buildFeatures { viewBinding = true; dataBinding = true }`, but data binding layouts are only used where a `<layout>` root exists (`activity_app_list.xml`); stick with generated `*Binding` classes elsewhere.
-- Layout filenames stay in snake_case with a screen or adapter prefix (`activity_app_detail`, `item_permission`); colors/themes live under `res/values` (`colors.xml`, `themes.xml`).
+## Coding Conventions & Patterns
+- **Async/Concurrency**: Use `Dispatchers.Default` for AI inference. Never block the main thread with `PermissionInsightEngine.analyze`.
+- **LLM Output Handling**:
+  - The LLM is prompted to return JSON.
+  - Use robust manual parsing (`JSONObject`) in `TinyLlamaInsightClient.parseInsight` as the model may output preamble/postscript text.
+  - Always validate JSON fields (`optString`, `optInt`) with safe defaults.
+- **Heuristics**: When modifying `PermissionInsightEngine`, ensure the heuristic path remains functional as a reliable fallback.
+- **ViewBinding**: Use `ActivityAppDetailBinding` patterns for UI updates.
 
-## Build + Run
-- From repo root run `./gradlew assembleDebug` (mac/linux) or `./gradlew.bat assembleDebug` (Windows) to build; Android Studio users can import the Gradle project directly.
-- `minSdk=26`, `targetSdk=34`, and `compileOptions`/`kotlinOptions` both expect Java/Kotlin 17—keep new code compatible.
-
-## Testing + Debugging
-- `./gradlew test` executes unit tests; `./gradlew connectedAndroidTest` needs an emulator/device and will exercise the default template tests in `app/src/androidTest`.
-- When debugging package queries, verify permissions on a device with enough installed apps; emulators may hide packages unless you side-load more APKs.
-
-## When Adding Features
-- Prefer injecting new UI behind additional activities/fragments under `ui/` and wire them from `MainActivity` or the adapter as needed.
-- Keep expensive `PackageManager` work off the main thread if you expand functionality; currently it runs inline in `AppListActivity`, so batch updates should use coroutines + `lifecycleScope`.
-- Maintain explicit navigation extras and document any new keys alongside their consumers.
+## External Dependencies
+- **ONNX Runtime GenAI**: Provided as a local AAR (`libs/onnxruntime-genai-android-0.11.0.aar`).
+- **TinyLlama**: 1.1B Chat model (quantized int4) loaded from app assets.

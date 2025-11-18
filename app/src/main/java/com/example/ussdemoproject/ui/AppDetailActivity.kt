@@ -137,7 +137,9 @@ class AppDetailActivity : AppCompatActivity() {
             val rationaleView = TextView(this).apply {
                 text = "- $rationale"
                 textSize = 14f
-                setPadding(0, 6, 0, 6)
+                setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
+                setPadding(0, 8, 0, 8)
+                setLineSpacing(0f, 1.2f)
             }
             binding.rationaleContainer.addView(rationaleView)
         }

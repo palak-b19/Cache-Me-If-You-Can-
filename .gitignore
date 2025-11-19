@@ -39,6 +39,7 @@ Thumbs.db
 *.zip
 
 # On-device model artifacts
+app/src/main/assets/models/tinyllama/
 app/src/main/assets/models/*.onnx
 app/src/main/assets/models/*.onnx.data
 app/src/main/assets/models/phi3-*.json

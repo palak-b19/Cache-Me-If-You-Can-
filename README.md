@@ -1,4 +1,4 @@
-Permission Manager
+# Permission Manager
 
 # Cache-Me-If-You-Can
 
@@ -36,4 +36,4 @@ Run unit tests:
 Set-Location -Path "C:\Users\Sidhartha Garg\Documents\GitHub\Cache-Me-If-You-Can-"
 .\gradlew.bat test
 ```
->>>>>>> origin/develop
+

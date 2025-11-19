@@ -1,6 +1,5 @@
-<<<<<<< HEAD
-Permission Manager
-=======
+# Permission Manager
+
 # Cache-Me-If-You-Can
 
 Privacy helper that surfaces each installed app, drills into its declared permissions, and now layers an on-device risk insight so users can judge exposure without leaving the device.
@@ -37,4 +36,4 @@ Run unit tests:
 Set-Location -Path "C:\Users\Sidhartha Garg\Documents\GitHub\Cache-Me-If-You-Can-"
 .\gradlew.bat test
 ```
->>>>>>> origin/develop
+

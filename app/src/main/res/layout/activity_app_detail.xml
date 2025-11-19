@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -9,12 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingBottom="32dp">
 
-        <!-- TOP ROW: ICON + NAME -->
+        <!-- HEADER -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="24dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
@@ -25,67 +27,239 @@
                 android:layout_marginEnd="16dp" />
 
             <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/appName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:textSize="32sp"
                     android:textColor="#222222"
-                    android:fontFamily="@font/poppins_semibold" />
+                    android:fontFamily="@font/anton_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/packageName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textColor="#666666"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/poppins_regular" />
+                    android:fontFamily="@font/montserrat_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- PERMISSIONS HEADER -->
-        <TextView
-            android:id="@+id/permissionsHeader"
+        <!-- ===================== INSIGHTS ===================== -->
+
+        <ProgressBar
+            android:id="@+id/insightProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:padding="16dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/riskCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="20dp"
+            android:visibility="gone"
+            app:cardElevation="3dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- TITLE + BADGES -->
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/risk_card_title"
+                        android:textColor="#222222"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/insightCacheBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_risk_badge"
+                        android:text="@string/insight_cache_label"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/riskBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_risk_badge"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/riskScoreValue"
+                    android:textSize="36sp"
+                    android:textColor="#222222"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/riskSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textColor="#444444" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="#E0E0E0" />
+
+                <TextView
+                    android:id="@+id/rationaleHeader"
+                    android:text="@string/insight_rationale_header"
+                    android:textColor="#222222"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:id="@+id/rationaleContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/insightConfidence"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/montserrat_regular" />
+
+                    <TextView
+                        android:id="@+id/insightTimestamp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/montserrat_regular" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- UNAVAILABLE MESSAGE -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/insightUnavailableGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="20dp"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:strokeColor="#FECACA"
+            app:cardBackgroundColor="#FEF2F2">
+
+            <LinearLayout
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@android:drawable/ic_dialog_alert"
+                    android:tint="@color/risk_high" />
+
+                <TextView
+                    android:id="@+id/insightUnavailableMessage"
+                    android:layout_marginStart="12dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/risk_high"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/montserrat_regular" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- PERMISSIONS -->
+        <TextView
+            android:id="@+id/permissionsHeader"
             android:text="Permissions"
-            android:textSize="28sp"
-            android:fontFamily="@font/poppins_semibold"
             android:textColor="#222222"
-            android:paddingTop="26dp"
-            android:paddingBottom="10dp" />
+            android:textSize="28sp"
+            android:fontFamily="@font/anton_regular"
+            android:paddingTop="28dp"
+            android:paddingStart="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#DDDDDD" />
+            android:background="#DDDDDD"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="6dp" />
 
-        <!-- PERMISSION LIST -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/permissionsRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
+            android:paddingHorizontal="24dp"
             android:layout_marginTop="12dp" />
 
-        <!-- MANAGE PERMISSIONS BUTTON -->
         <Button
             android:id="@+id/managePermissionsBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Manage Permissions"
-            android:backgroundTint="#333333"
             android:textColor="#FFFFFF"
-            android:padding="16dp"
             android:textAllCaps="false"
-            android:fontFamily="@font/montserrat_semibold"
+            android:backgroundTint="#333333"
+            android:padding="16dp"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp" />
+            android:layout_marginHorizontal="24dp"
+            android:fontFamily="@font/montserrat_semibold" />
 
     </LinearLayout>
 

@@ -11,8 +11,13 @@ import com.example.ussdemoproject.ui.AppDetailActivity
 
 class AppListAdapter(
     private val context: Context,
-    private val appList: List<AppInfo>
+    private var appList: List<AppInfo>
 ) : RecyclerView.Adapter<AppListAdapter.AppViewHolder>() {
+
+    fun updateData(newApps: List<AppInfo>) {
+        appList = newApps
+        notifyDataSetChanged()
+    }
 
     inner class AppViewHolder(val binding: ItemAppBinding) :
         RecyclerView.ViewHolder(binding.root)

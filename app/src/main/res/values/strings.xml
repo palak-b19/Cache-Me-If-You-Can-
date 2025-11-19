@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">Uss Demo Project</string>
+    <string name="risk_card_title">Smart risk score</string>
+    <string name="risk_level_low">Low risk</string>
+    <string name="risk_level_medium">Medium risk</string>
+    <string name="risk_level_high">High risk</string>
+    <string name="risk_score_template">%1$d / 100</string>
+    <string name="insight_rationale_header">Why we think this</string>
+    <string name="insight_confidence_template">Confidence %1$d%%</string>
+    <string name="insight_updated_at">Updated %1$s</string>
+    <string name="insight_unavailable_offline">Advanced LLM insights are unavailable offline. Showing heuristic fallback.</string>
+    <string name="insight_unavailable_generic">Insights unavailable: %1$s</string>
+    <string name="insight_unavailable_offline_short">Advanced LLM insights unavailable offline.</string>
+    <string name="insight_reason_no_permissions">This app does not declare runtime permissions to analyze.</string>
+    <string name="insight_summary_generic">%1$d permissions requested by %2$s.</string>
+    <string name="insight_summary_with_signals">%1$d permissions including %2$s.</string>
+    <string name="insight_default_rationale">No high-risk signals detected. Score driven by baseline heuristics.</string>
+    <string name="permissions_section_title">Permissions</string>
+    <string name="manage_permissions_cta">Manage Permissions</string>
+    <string name="insight_cache_label">Cached</string>
+    <string name="tinyllama_model_missing">TinyLlama model assets not found. Place TinyLlama-1.1B Chat INT4 under app/src/main/assets/models/tinyllama/.</string>
+    <string name="tinyllama_tokenizer_missing">TinyLlama tokenizer JSON missing. Copy the tokenizer file beside the model asset.</string>
+    <string name="tinyllama_runtime_error">Unable to initialize TinyLlama runtime.</string>
+    <string name="tinyllama_runtime_unimplemented">TinyLlama runtime not yet wired for inference.</string>
+    <string name="tinyllama_config_missing">TinyLlama GenAI config missing. Ensure genai_config.json ships with the model.</string>
+    <string name="tinyllama_asset_missing">Required TinyLlama asset missing: %1$s</string>
+    <string name="tinyllama_asset_copy_failed">Failed to unpack TinyLlama asset %1$s</string>
+    <string name="tinyllama_invalid_response">TinyLlama returned an invalid JSON payload.</string>
+    <string name="tinyllama_unsupported_device">LLM analysis needs a physical ARM64 device. Showing heuristic fallback instead.</string>
 </resources>

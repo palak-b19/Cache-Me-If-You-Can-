@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Colors -->
+    <color name="primary">#818CF8</color> <!-- Indigo 400 -->
+    <color name="primary_variant">#6366F1</color> <!-- Indigo 500 -->
+    <color name="secondary">#34D399</color> <!-- Emerald 400 -->
+    <color name="accent">#FBBF24</color> <!-- Amber 400 -->
+
+    <!-- UI Colors -->
+    <color name="background">#121212</color> <!-- Very Dark Gray -->
+    <color name="surface">#1E1E1E</color> <!-- Dark Gray -->
+    <color name="surface_variant">#2C2C2C</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#F9FAFB</color> <!-- Gray 50 -->
+    <color name="text_secondary">#D1D5DB</color> <!-- Gray 300 -->
+    <color name="text_tertiary">#9CA3AF</color> <!-- Gray 400 -->
+    <color name="white">#000000</color> <!-- Inverted for dark mode logic if needed, but usually white stays white. Let's keep white as white and use text_primary for text. -->
+    <!-- Actually, let's keep white as white because it's often used for text on primary colors which remain dark/saturated. -->
+    
+    <color name="black">#FFFFFF</color>
+
+    <!-- Risk Colors -->
+    <color name="risk_low">#34D399</color> <!-- Emerald 400 -->
+    <color name="risk_low_bg">#064E3B</color> <!-- Emerald 900 -->
+    <color name="risk_medium">#FBBF24</color> <!-- Amber 400 -->
+    <color name="risk_medium_bg">#78350F</color> <!-- Amber 900 -->
+    <color name="risk_high">#F87171</color> <!-- Red 400 -->
+    <color name="risk_high_bg">#7F1D1D</color> <!-- Red 900 -->
+    
+    <color name="risk_badge_text">#000000</color>
+    <color name="risk_card_surface">#1E1E1E</color>
+    
+    <!-- Legacy mappings -->
+    <color name="purple_200">@color/primary</color>
+    <color name="purple_500">@color/primary</color>
+    <color name="purple_700">@color/primary_variant</color>
+    <color name="teal_200">@color/secondary</color>
+    <color name="teal_700">@color/secondary</color>
+</resources>

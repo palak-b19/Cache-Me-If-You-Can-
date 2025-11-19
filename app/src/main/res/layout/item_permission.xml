@@ -13,25 +13,50 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="18dp">
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/permissionTitle"
-            android:layout_width="wrap_content"
+        <!-- Row with icon + title -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="#222222"
-            android:fontFamily="@font/poppins_semibold"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_manage"
+                android:tint="#666666"
+                android:alpha="0.7"
+                android:contentDescription="Permission Icon" />
+
+            <TextView
+                android:id="@+id/permissionTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:textSize="18sp"
+                android:textColor="#222222"
+                android:fontFamily="@font/montserrat_semibold" />
+        </LinearLayout>
+
+        <!-- Permission description -->
         <TextView
             android:id="@+id/permissionDescription"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="#666666"
-            android:fontFamily="@font/poppins_regular"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/montserrat_regular"
+            android:visibility="gone" />
 
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="#F3F4F6" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

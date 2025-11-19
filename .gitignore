@@ -37,3 +37,11 @@ Thumbs.db
 
 # Misc backups
 *.zip
+
+# On-device model artifacts
+app/src/main/assets/models/*.onnx
+app/src/main/assets/models/*.onnx.data
+app/src/main/assets/models/phi3-*.json
+app/libs/*.aar
+!app/src/main/assets/models/.gitkeep
+!app/libs/.gitkeep

@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ussdemoproject.R
 import com.example.ussdemoproject.databinding.ItemPermissionBinding
 
+
+
 class PermissionAdapter(
     private val context: Context,
     private val permissions: List<String>

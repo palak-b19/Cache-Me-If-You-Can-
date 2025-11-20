@@ -106,9 +106,9 @@ class TinyLlamaInsightClient(private val context: Context) {
 
     private fun isCompatibleDevice(): Boolean {
         val isEmulator = Build.FINGERPRINT.lowercase(Locale.US).contains("generic") ||
-            Build.FINGERPRINT.lowercase(Locale.US).contains("emulator") ||
-            Build.HARDWARE.contains("goldfish", ignoreCase = true) ||
-            Build.HARDWARE.contains("ranchu", ignoreCase = true)
+                Build.FINGERPRINT.lowercase(Locale.US).contains("emulator") ||
+                Build.HARDWARE.contains("goldfish", ignoreCase = true) ||
+                Build.HARDWARE.contains("ranchu", ignoreCase = true)
         val hasArm64Abi = Build.SUPPORTED_ABIS.any { abi ->
             abi.equals("arm64-v8a", ignoreCase = true)
         }

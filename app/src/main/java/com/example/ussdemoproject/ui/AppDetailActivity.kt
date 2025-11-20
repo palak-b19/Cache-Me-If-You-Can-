@@ -9,7 +9,6 @@ import android.provider.Settings
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -37,11 +36,11 @@ class AppDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // -----------------------------
-        // LOAD CUSTOM FONTS
+        // SAFE FONT LOADING
         // -----------------------------
-        val anton = ResourcesCompat.getFont(this, R.font.anton_regular)
-        val montserratRegular = ResourcesCompat.getFont(this, R.font.montserrat_regular)
-        val montserratSemiBold = ResourcesCompat.getFont(this, R.font.montserrat_semibold)
+        val anton = FontProvider.anton(this)
+        val montserratRegular = FontProvider.montserratRegular(this)
+        val montserratSemiBold = FontProvider.montserratSemi(this)
 
         // -----------------------------
         // GET APP INFORMATION
@@ -63,11 +62,10 @@ class AppDetailActivity : AppCompatActivity() {
         binding.permissionsHeader.typeface = anton
 
         // -----------------------------
-        // LOAD APP ICON SAFELY
+        // LOAD APP ICON
         // -----------------------------
         try {
-            val icon = packageManager.getApplicationIcon(packageName)
-            binding.appIcon.setImageDrawable(icon)
+            binding.appIcon.setImageDrawable(packageManager.getApplicationIcon(packageName))
         } catch (_: Exception) {}
 
         // -----------------------------
@@ -76,17 +74,14 @@ class AppDetailActivity : AppCompatActivity() {
         val permissions = try {
             packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
                 .requestedPermissions?.toList() ?: emptyList()
-        } catch (_: Exception) {
-            emptyList()
-        }
+        } catch (_: Exception) { emptyList() }
 
         // -----------------------------
         // SETUP RECYCLERVIEW
         // -----------------------------
-        binding.permissionsRecycler.apply {
-            layoutManager = LinearLayoutManager(this@AppDetailActivity)
-            adapter = PermissionAdapter(this@AppDetailActivity, permissions)
-        }
+        binding.permissionsRecycler.layoutManager = LinearLayoutManager(this)
+        binding.permissionsRecycler.adapter =
+            PermissionAdapter(this, permissions)
 
         // -----------------------------
         // MANAGE PERMISSIONS BUTTON
@@ -100,7 +95,7 @@ class AppDetailActivity : AppCompatActivity() {
         }
 
         // -----------------------------
-        // LOAD AI INSIGHTS
+        // LOAD INSIGHTS
         // -----------------------------
         loadPermissionInsights(appName, packageName, permissions)
     }
@@ -120,15 +115,8 @@ class AppDetailActivity : AppCompatActivity() {
             when (result) {
                 is PermissionInsightResult.Success -> {
                     renderInsight(result.insight)
-                    val llmIssue = result.insight.llmUnavailableReason
-
-                    if (llmIssue != null) {
-                        showUnavailableMessage(llmIssue)
-                    } else {
-                        hideUnavailableMessage()
-                    }
+                    result.insight.llmUnavailableReason?.let { showUnavailableMessage(it) }
                 }
-
                 is PermissionInsightResult.Unavailable -> {
                     showUnavailableMessage(
                         getString(R.string.insight_unavailable_generic, result.reason)
@@ -141,39 +129,22 @@ class AppDetailActivity : AppCompatActivity() {
     private fun renderInsight(insight: PermissionInsight) {
         binding.riskCard.isVisible = true
 
-        // Tint badge color
         val badgeColor = ContextCompat.getColor(this, insight.riskLevel.colorRes)
 
-        ViewCompat.setBackgroundTintList(
-            binding.riskBadge,
-            ColorStateList.valueOf(badgeColor)
-        )
-
+        ViewCompat.setBackgroundTintList(binding.riskBadge, ColorStateList.valueOf(badgeColor))
         binding.riskBadge.text = getString(insight.riskLevel.labelRes)
         binding.riskScoreValue.text = getString(R.string.risk_score_template, insight.riskScore)
         binding.riskScoreValue.setTextColor(badgeColor)
 
-        // Summary, confidence, timestamp
         binding.riskSummary.text = insight.summary
-        binding.insightConfidence.text = getString(
-            R.string.insight_confidence_template,
-            insight.confidencePercent
-        )
-        binding.insightTimestamp.text = getString(
-            R.string.insight_updated_at,
-            formatTimestamp(insight.generatedAt)
-        )
+        binding.insightConfidence.text =
+            getString(R.string.insight_confidence_template, insight.confidencePercent)
+        binding.insightTimestamp.text =
+            getString(R.string.insight_updated_at, formatTimestamp(insight.generatedAt))
 
-        // Cache badge
         binding.insightCacheBadge.isVisible = insight.fromCache
-        if (insight.fromCache) {
-            ViewCompat.setBackgroundTintList(
-                binding.insightCacheBadge,
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.purple_700))
-            )
-        }
 
-        // Rationale bullets
+        // RATIONALE LIST
         binding.rationaleContainer.removeAllViews()
         binding.rationaleHeader.isVisible = insight.rationale.isNotEmpty()
 
@@ -181,7 +152,7 @@ class AppDetailActivity : AppCompatActivity() {
             val tv = TextView(this).apply {
                 text = "• $rationale"
                 textSize = 14f
-                typeface = ResourcesCompat.getFont(context, R.font.montserrat_regular)
+                typeface = FontProvider.montserratRegular(context)
                 setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
                 setPadding(0, 8, 0, 8)
                 setLineSpacing(0f, 1.2f)
@@ -201,7 +172,7 @@ class AppDetailActivity : AppCompatActivity() {
     }
 
     private fun formatTimestamp(epochMillis: Long): String {
-        val formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-        return formatter.format(Date(epochMillis))
+        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+            .format(Date(epochMillis))
     }
 }

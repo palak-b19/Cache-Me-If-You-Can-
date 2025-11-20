@@ -3,12 +3,9 @@ package com.example.ussdemoproject.ui.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ussdemoproject.R
 import com.example.ussdemoproject.databinding.ItemPermissionBinding
-
-
+import com.example.ussdemoproject.ui.FontProvider
 
 class PermissionAdapter(
     private val context: Context,
@@ -39,12 +36,8 @@ class PermissionAdapter(
         holder.binding.permissionDescription.text =
             "This app uses $readableTitle permission."
 
-        // Apply Poppins fonts
-        holder.binding.permissionTitle.typeface =
-            ResourcesCompat.getFont(context, R.font.poppins_semibold)
-
-        holder.binding.permissionDescription.typeface =
-            ResourcesCompat.getFont(context, R.font.poppins_regular)
+        holder.binding.permissionTitle.typeface = FontProvider.poppinsSemi(context)
+        holder.binding.permissionDescription.typeface = FontProvider.poppinsRegular(context)
     }
 
     override fun getItemCount(): Int = permissions.size

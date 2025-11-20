@@ -32,12 +32,21 @@ class AppListAdapter(
 
         holder.binding.appName.text = app.appName
         holder.binding.packageName.text = app.packageName
-        holder.binding.appIcon.setImageDrawable(app.icon)
+
+        val pm = context.packageManager
+        try {
+            val icon = pm.getApplicationIcon(app.packageName)
+            holder.binding.appIcon.setImageDrawable(icon)
+        } catch (_: Exception) {
+            // Optionally set a fallback icon here if you have one
+            // holder.binding.appIcon.setImageResource(R.drawable.ic_default_app)
+        }
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(context, AppDetailActivity::class.java)
-            intent.putExtra("appName", app.appName)
-            intent.putExtra("packageName", app.packageName)
+            val intent = Intent(context, AppDetailActivity::class.java).apply {
+                putExtra("appName", app.appName)
+                putExtra("packageName", app.packageName)
+            }
             context.startActivity(intent)
         }
     }

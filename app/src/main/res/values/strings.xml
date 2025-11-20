@@ -18,6 +18,7 @@
     <string name="permissions_section_title">Permissions</string>
     <string name="manage_permissions_cta">Manage Permissions</string>
     <string name="insight_cache_label">Cached</string>
+    <string name="toggle_theme">Toggle theme</string>
     <string name="tinyllama_model_missing">TinyLlama model assets not found. Place TinyLlama-1.1B Chat INT4 under app/src/main/assets/models/tinyllama/.</string>
     <string name="tinyllama_tokenizer_missing">TinyLlama tokenizer JSON missing. Copy the tokenizer file beside the model asset.</string>
     <string name="tinyllama_runtime_error">Unable to initialize TinyLlama runtime.</string>

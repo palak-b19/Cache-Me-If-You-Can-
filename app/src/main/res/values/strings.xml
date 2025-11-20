@@ -13,7 +13,7 @@
     <string name="insight_unavailable_generic">Insights unavailable: %1$s</string>
     <string name="insight_unavailable_offline_short">Advanced LLM insights unavailable offline.</string>
     <string name="insight_reason_no_permissions">This app does not declare runtime permissions to analyze.</string>
-    <string name="insight_summary_generic">%1$d permissions requested by %2$s.</string>
+    <string name="insight_summary_generic">Privacy summary for %1$s</string>
     <string name="insight_summary_with_signals">%1$d permissions including %2$s.</string>
     <string name="insight_default_rationale">No high-risk signals detected. Score driven by baseline heuristics.</string>
     <string name="permissions_section_title">Permissions</string>

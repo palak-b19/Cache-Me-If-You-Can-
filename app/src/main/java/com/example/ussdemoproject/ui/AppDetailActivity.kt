@@ -166,7 +166,12 @@ class   AppDetailActivity : AppCompatActivity() {
         binding.riskScoreValue.text = getString(R.string.risk_score_template, insight.riskScore)
         binding.riskScoreValue.setTextColor(badgeColor)
 
-        binding.riskSummary.text = insight.summary
+        val cleanedSummary = insight.summary
+            .replace(Regex("\\b\\d+ permissions?\\b"), "")
+            .trim()
+
+        binding.riskSummary.text = cleanedSummary
+
         binding.insightConfidence.text =
             getString(R.string.insight_confidence_template, insight.confidencePercent)
         binding.insightTimestamp.text =

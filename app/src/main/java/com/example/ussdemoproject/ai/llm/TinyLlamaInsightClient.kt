@@ -116,7 +116,7 @@ class TinyLlamaInsightClient(private val context: Context) {
     }
 
     private fun materializeAssets(): File? {
-        val modelDir = File(appContext.filesDir, MODEL_CACHE_DIRECTORY)
+        val modelDir = File(appContext.cacheDir, MODEL_CACHE_DIRECTORY)
         if (!modelDir.exists() && !modelDir.mkdirs()) {
             lastIssue = appContext.getString(R.string.tinyllama_model_missing)
             return null
@@ -130,6 +130,7 @@ class TinyLlamaInsightClient(private val context: Context) {
                     assetName.contains("genai_config") -> appContext.getString(R.string.tinyllama_config_missing)
                     else -> appContext.getString(R.string.tinyllama_asset_missing, assetName)
                 }
+                Log.e("TinyLlama", "Missing asset $assetName: $lastIssue")
                 return null
             }
 
@@ -140,6 +141,7 @@ class TinyLlamaInsightClient(private val context: Context) {
 
             if (!copyAsset(assetPath, destination)) {
                 lastIssue = appContext.getString(R.string.tinyllama_asset_copy_failed, assetName)
+                Log.e("TinyLlama", "Failed to copy asset $assetName to ${destination.absolutePath}: $lastIssue")
                 return null
             }
         }
@@ -155,7 +157,8 @@ class TinyLlamaInsightClient(private val context: Context) {
                 }
             }
             true
-        } catch (_: Exception) {
+        } catch (ex: Exception) {
+            Log.e("TinyLlama", "Error copying asset $assetPath to ${destination.absolutePath}", ex)
             false
         }
     }
@@ -190,6 +193,20 @@ class TinyLlamaInsightClient(private val context: Context) {
         } catch (_: Exception) {
         } finally {
             model = null
+        }
+    }
+
+    /**
+     * Delete cached model assets from the app cache directory.
+     * This is a best-effort cleanup; failures are ignored.
+     */
+    fun deleteModelCache() {
+        try {
+            val dir = File(appContext.cacheDir, MODEL_CACHE_DIRECTORY)
+            dir.listFiles()?.forEach { it.delete() }
+            dir.delete()
+        } catch (_: Exception) {
+            // ignore
         }
     }
 

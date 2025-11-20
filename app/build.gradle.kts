@@ -23,7 +23,6 @@ android {
         dataBinding = true
     }
 
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -31,6 +30,26 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    // -----------------------------------------
+    //  ENABLE R8 (SHRINK + OBFUSCATION) SAFELY
+    // -----------------------------------------
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = true        // shrink + obfuscate
+            isShrinkResources = true      // remove unused resources
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+
+        getByName("debug") {
+            isMinifyEnabled = false       // keep debug readable
+            isShrinkResources = false
+        }
     }
 }
 

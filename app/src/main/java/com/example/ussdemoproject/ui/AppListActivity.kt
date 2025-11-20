@@ -8,17 +8,26 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.ussdemoproject.R
+import com.example.ussdemoproject.ai.PermissionInsightEngine
+import com.example.ussdemoproject.ai.PermissionInsightResult
 import com.example.ussdemoproject.databinding.ActivityAppListBinding
 import com.example.ussdemoproject.models.AppInfo
-import com.example.ussdemoproject.ui.adapters.AppListAdapter
+import com.example.ussdemoproject.ui.adapters.RiskGroupedAppListAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AppListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAppListBinding
-    private lateinit var adapter: AppListAdapter
+    private lateinit var adapter: RiskGroupedAppListAdapter
     private lateinit var prefs: SharedPreferences
     private var allApps: List<AppInfo> = emptyList()
+    private val insightEngine by lazy { PermissionInsightEngine(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
@@ -60,21 +69,23 @@ class AppListActivity : AppCompatActivity() {
 
     private fun updateThemeIcon(isDark: Boolean) {
         val icon = if (isDark) {
-            android.R.drawable.ic_menu_day
+            R.drawable.ic_sun
         } else {
-            android.R.drawable.ic_menu_sort_by_size
+            R.drawable.ic_moon
         }
         binding.themeToggleBtn.setImageResource(icon)
     }
 
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = AppListAdapter(this, emptyList())
+        adapter = RiskGroupedAppListAdapter(this, emptyList())
         binding.recyclerView.adapter = adapter
     }
 
     private fun loadApps() {
-        val pm = packageManager
+        binding.progressBar.isVisible = true
+        lifecycleScope.launch(Dispatchers.IO) {
+            val pm = packageManager
 
         allApps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
             .filter { pm.getLaunchIntentForPackage(it.packageName) != null }
@@ -93,7 +104,35 @@ class AppListActivity : AppCompatActivity() {
             }
             .sortedBy { it.appName.lowercase() }
 
-        adapter.updateData(allApps)
+            withContext(Dispatchers.Main) {
+                adapter.updateData(allApps)
+                binding.progressBar.isVisible = false
+                startInsightAnalysis()
+            }
+        }
+    }
+
+    private fun startInsightAnalysis() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            allApps.forEach { appInfo ->
+                val result = insightEngine.analyze(
+                    appName = appInfo.appName,
+                    packageName = appInfo.packageName,
+                    permissions = appInfo.permissions ?: emptyList()
+                )
+
+                if (result is PermissionInsightResult.Success) {
+                    appInfo.riskScore = result.insight.riskScore
+                    appInfo.riskLevel = result.insight.riskLevel
+                    appInfo.summary = result.insight.summary
+                    appInfo.generatedAt = result.insight.generatedAt
+
+                    withContext(Dispatchers.Main) {
+                        adapter.updateData(allApps)
+                    }
+                }
+            }
+        }
     }
 
     private fun setupSearch() {

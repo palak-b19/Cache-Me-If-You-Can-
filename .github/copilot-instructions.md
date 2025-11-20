@@ -1,41 +1,54 @@
 # Cache-Me-If-You-Can AI Instructions
 
 ## Project Overview
+This is an Android application that analyzes installed apps and their permissions to provide on-device risk insights. It uses a hybrid approach combining heuristic rules and an on-device LLM (TinyLlama via ONNX Runtime GenAI).
 
-Android privacy helper app that analyzes installed applications to provide on-device risk insights using a local LLM (TinyLlama) via ONNX Runtime GenAI, with a heuristic fallback.
+## Tech Stack
+- **Language**: Kotlin (JVM 17)
+- **UI Framework**: Android Views (XML) with ViewBinding and DataBinding
+- **Build System**: Gradle (Kotlin DSL)
+- **AI/ML**: ONNX Runtime GenAI (local AAR), TinyLlama-1.1B-Chat
+- **Architecture**: MVVM-like structure with Activities, Adapters, and a dedicated AI engine
 
-## Architecture & Core Components
+## Critical Workflows
 
-- **Insight Engine**: `PermissionInsightEngine` (`app/src/main/java/com/example/ussdemoproject/ai/`) is the central orchestrator. It manages:
-  - **Caching**: In-memory `LruCache` (6-hour TTL) to avoid redundant processing.
-  - **Strategy**: Tries LLM first, falls back to heuristics if unavailable/fails.
-- **LLM Client**: `TinyLlamaInsightClient` wraps `onnxruntime-genai`.
-  - **Assets**: Models live in `app/src/main/assets/models/tinyllama/`.
-  - **Prompting**: `TinyLlamaPromptBuilder` constructs strict JSON-output prompts.
-- **UI Layer**: `AppDetailActivity` consumes `PermissionInsightResult` via Kotlin Coroutines (`lifecycleScope`).
+### 1. Initial Setup (Required for AI)
+The project requires external assets (model files and AAR) that are not in git.
+- **Command**: `.\scripts\download_tinyllama_assets.ps1` (PowerShell)
+- **Action**: Downloads `onnxruntime-genai-android-0.11.0.aar` to `app/libs/` and model files to `app/src/main/assets/models/tinyllama/`.
+- **Note**: If these assets are missing, the app builds but falls back to heuristic-only mode.
 
-## Critical Developer Workflows
+### 2. Build & Run
+- **Debug Build**: `.\gradlew.bat assembleDebug`
+- **Run Tests**: `.\gradlew.bat test`
 
-- **Initial Setup**: You MUST run `scripts/download_tinyllama_assets.ps1` (PowerShell) to fetch the TinyLlama ONNX model and the GenAI AAR.
-  - Without this, the app builds but runs in "Heuristic Only" mode.
-- **Build**: Standard Gradle: `./gradlew.bat assembleDebug`.
-- **Debugging AI**:
-  - Check `TinyLlamaInsightClient.lastKnownIssue()` for runtime errors.
-  - `PermissionInsightResult.Unavailable` or `llmUnavailableReason` in the UI indicates fallback triggers.
+## Architecture & Patterns
 
-## Coding Conventions & Patterns
+### AI Engine (`com.example.ussdemoproject.ai`)
+- **Entry Point**: `PermissionInsightEngine.analyze(appName, packageName, permissions)`
+- **Hybrid Logic**:
+  1. Checks in-memory `LruCache` (6-hour TTL).
+  2. Attempts to run **TinyLlama** via `TinyLlamaInsightClient`.
+  3. Falls back to **Heuristic Model** (`runHeuristicModel`) if LLM is unavailable or fails.
+- **Heuristics**: Defined in `PERMISSION_SIGNALS` (weighted keywords like "READ_SMS", "CAMERA").
 
-- **Async/Concurrency**: Use `Dispatchers.Default` for AI inference. Never block the main thread with `PermissionInsightEngine.analyze`.
-- **LLM Output Handling**:
-  - The LLM is prompted to return JSON.
-  - Use robust manual parsing (`JSONObject`) in `TinyLlamaInsightClient.parseInsight` as the model may output preamble/postscript text.
-  - Always validate JSON fields (`optString`, `optInt`) with safe defaults.
-- **Heuristics**: When modifying `PermissionInsightEngine`, ensure the heuristic path remains functional as a reliable fallback.
-- **ViewBinding**: Use `ActivityAppDetailBinding` patterns for UI updates.
+### UI Layer (`com.example.ussdemoproject.ui`)
+- Uses standard `AppCompatActivity` and `RecyclerView`.
+- **ViewBinding**: Enabled in `build.gradle.kts`. Use `binding.root` for `setContentView`.
+- **DataBinding**: Enabled.
 
-## External Dependencies
+### Dependency Management
+- **Local AAR**: The ONNX Runtime GenAI library is loaded from `app/libs/`.
+- **Gradle Logic**: `app/build.gradle.kts` conditionally includes the AAR and logs a warning if missing.
 
-- **ONNX Runtime GenAI**: Provided as a local AAR (`libs/onnxruntime-genai-android-0.11.0.aar`).
-- **TinyLlama**: 1.1B Chat model (quantized int4) loaded from app assets.
+## Key File Locations
+- **AI Logic**: `app/src/main/java/com/example/ussdemoproject/ai/PermissionInsightEngine.kt`
+- **LLM Client**: `app/src/main/java/com/example/ussdemoproject/ai/llm/`
+- **UI Components**: `app/src/main/java/com/example/ussdemoproject/ui/`
+- **Asset Script**: `scripts/download_tinyllama_assets.ps1`
+- **Model Config**: `app/src/main/assets/models/tinyllama/genai_config.json`
 
-update this file when changes are made in other files
+## Coding Conventions
+- **Permissions**: Handle permissions as strings (e.g., "android.permission.CAMERA").
+- **Error Handling**: The AI engine must never crash the app; always return a `PermissionInsightResult` (Success or Unavailable).
+- **Offline First**: Assume no internet connection. All analysis happens on-device.

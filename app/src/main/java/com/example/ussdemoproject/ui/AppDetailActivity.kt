@@ -14,12 +14,17 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ussdemoproject.R
+import com.example.ussdemoproject.ai.InsightSource
 import com.example.ussdemoproject.ai.PermissionInsight
 import com.example.ussdemoproject.ai.PermissionInsightEngine
 import com.example.ussdemoproject.ai.PermissionInsightResult
 import com.example.ussdemoproject.databinding.ActivityAppDetailBinding
 import com.example.ussdemoproject.ui.adapters.PermissionAdapter
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
@@ -29,6 +34,7 @@ class   AppDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAppDetailBinding
     private val insightEngine by lazy { PermissionInsightEngine(this) }
+    private var analysisJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +77,7 @@ class   AppDetailActivity : AppCompatActivity() {
         // -----------------------------
         // GET PERMISSIONS
         // -----------------------------
-        val permissions = try {
+        val permissions = intent.getStringArrayListExtra("permissions")?.toList() ?: try {
             packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
                 .requestedPermissions?.toList() ?: emptyList()
         } catch (_: Exception) { emptyList() }
@@ -100,16 +106,40 @@ class   AppDetailActivity : AppCompatActivity() {
         loadPermissionInsights(appName, packageName, permissions)
     }
 
-    private fun loadPermissionInsights(appName: String, packageName: String, permissions: List<String>) {
+    private fun loadPermissionInsights(
+        appName: String,
+        packageName: String,
+        permissions: List<String>,
+        forceHeuristic: Boolean = false
+    ) {
         binding.insightProgress.isVisible = true
         binding.riskCard.isVisible = false
         hideUnavailableMessage()
 
-        lifecycleScope.launch {
+        analysisJob?.cancel()
+        analysisJob = lifecycleScope.launch {
+            val timerJob = if (!forceHeuristic) {
+                launch {
+                    delay(20000) // 20 seconds
+                    if (isActive) {
+                        Snackbar.make(
+                            binding.root,
+                            "Analysis is taking longer than expected.",
+                            Snackbar.LENGTH_INDEFINITE
+                        )
+                            .setAction("Use Heuristic") {
+                                loadPermissionInsights(appName, packageName, permissions, forceHeuristic = true)
+                            }
+                            .show()
+                    }
+                }
+            } else null
+
             val result = withContext(Dispatchers.Default) {
-                insightEngine.analyze(appName, packageName, permissions)
+                insightEngine.analyze(appName, packageName, permissions, forceHeuristic)
             }
 
+            timerJob?.cancel()
             binding.insightProgress.isVisible = false
 
             when (result) {

@@ -27,7 +27,7 @@ private val REQUIRED_MODEL_ASSETS = listOf(
     "tokenizer_config.json",
     "special_tokens_map.json"
 )
-private const val MAX_GENERATED_CHAR_COUNT = 800
+private const val MAX_GENERATED_CHAR_COUNT = 1500
 
 /**
  * Hosts TinyLlama via ONNX Runtime GenAI by copying the bundled assets onto disk
@@ -230,12 +230,12 @@ class TinyLlamaInsightClient(private val context: Context) {
     }
 
     private fun configureSearchOptions(params: GeneratorParams) {
-        params.setSearchOption("max_length", 512.0)
-        params.setSearchOption("min_length", 48.0)
+        params.setSearchOption("max_length", 1024.0)
+        params.setSearchOption("min_length", 1.0)
         params.setSearchOption("temperature", 0.4)
-        params.setSearchOption("top_p", 0.92)
+        params.setSearchOption("top_p", 0.9)
         params.setSearchOption("top_k", 40.0)
-        params.setSearchOption("repetition_penalty", 1.05)
+        params.setSearchOption("repetition_penalty", 1.02)
         params.setSearchOption("do_sample", false)
     }
 
@@ -290,6 +290,16 @@ class TinyLlamaInsightClient(private val context: Context) {
     }
 
     private fun extractJsonBlock(text: String): String? {
+        // Attempt to find JSON within markdown code blocks first
+        val jsonBlockStart = text.indexOf("```json")
+        if (jsonBlockStart != -1) {
+            val start = text.indexOf('{', jsonBlockStart)
+            val end = text.indexOf("```", start)
+            if (start != -1 && end != -1) {
+                return text.substring(start, end).trim()
+            }
+        }
+
         val start = text.indexOf('{')
         if (start == -1) return null
 
@@ -324,7 +334,8 @@ private data class TinyLlamaPrompt(
     val systemPrompt: String,
     val userPrompt: String
 ) {
-    fun asPlainText(): String = "${systemPrompt.trim()}\n\n${userPrompt.trim()}"
+    fun asPlainText(): String =
+        "<|system|>\n${systemPrompt.trim()}</s>\n<|user|>\n${userPrompt.trim()}</s>\n<|assistant|>\n"
 }
 
 data class LlmInsightPayload(
@@ -338,7 +349,15 @@ data class LlmInsightPayload(
 private class TinyLlamaPromptBuilder {
 
     fun buildPrompt(appName: String, packageName: String, permissions: List<String>): TinyLlamaPrompt {
-        val groupedPermissions = permissions.groupBy { permission ->
+        // Truncate permissions if there are too many to prevent context overflow
+        val maxPermissions = 50
+        val permissionsToProcess = if (permissions.size > maxPermissions) {
+            permissions.take(maxPermissions)
+        } else {
+            permissions
+        }
+
+        val groupedPermissions = permissionsToProcess.groupBy { permission ->
             permission.substringAfterLast('.')
                 .uppercase(Locale.US)
                 .substringBefore('_')
@@ -349,22 +368,26 @@ private class TinyLlamaPromptBuilder {
             "- ${group.replaceFirstChar { it.uppercase(Locale.getDefault()) }}: $joined"
         }
 
+        val truncationNote = if (permissions.size > maxPermissions) {
+            "\n(Note: ${permissions.size - maxPermissions} additional permissions omitted for brevity)"
+        } else ""
+
         val systemPrompt = """
-            You are an on-device privacy analyst running entirely offline. When asked about an app's permissions, you respond with a concise JSON object that contains a numeric risk score (0-100), a short plain-language insightful summary, an array named "rationale" with 1-4 bullet explanations, and a confidencePercent (0-100). The JSON must not contain any additional keys.
+            You are a privacy expert. Analyze app permissions for risks. Respond ONLY with a JSON object. Keep the summary and rationale extremely concise and short.
         """.trimIndent()
 
         val userPrompt = """
-            App name: $appName
-            Package: $packageName
+            App: $appName ($packageName)
             Permissions:
             $permissionBulletList
+            $truncationNote
 
-            Respond strictly in JSON with the shape:
+            Return strictly JSON:
             {
-              "summary": "string",
-              "riskScore": number,
-              "rationale": ["reason1", "reason2"],
-              "confidencePercent": number
+              "summary": "One sentence summary.",
+              "riskScore": 0-100,
+              "rationale": ["Short reason 1", "Short reason 2"],
+              "confidencePercent": 0-100
             }
         """.trimIndent()
 

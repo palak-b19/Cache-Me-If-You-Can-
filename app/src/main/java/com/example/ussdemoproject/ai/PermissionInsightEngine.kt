@@ -19,7 +19,8 @@ class PermissionInsightEngine(context: Context) {
     fun analyze(
         appName: String,
         packageName: String,
-        permissions: List<String>
+        permissions: List<String>,
+        forceHeuristic: Boolean = false
     ): PermissionInsightResult {
         if (permissions.isEmpty()) {
             return PermissionInsightResult.Unavailable(
@@ -27,23 +28,25 @@ class PermissionInsightEngine(context: Context) {
             )
         }
 
-        cache.get(packageName)?.takeIf { insight ->
-            System.currentTimeMillis() - insight.generatedAt <= CACHE_TTL_MILLIS
-        }?.let { cached ->
-            return PermissionInsightResult.Success(cached.copy(fromCache = true))
-        }
+        if (!forceHeuristic) {
+            cache.get(packageName)?.takeIf { insight ->
+                System.currentTimeMillis() - insight.generatedAt <= CACHE_TTL_MILLIS
+            }?.let { cached ->
+                return PermissionInsightResult.Success(cached.copy(fromCache = true))
+            }
 
-        val llmInsight = runTinyLlamaInsight(appName, packageName, permissions)
-        if (llmInsight != null) {
-            cache.put(packageName, llmInsight)
-            return PermissionInsightResult.Success(llmInsight)
+            val llmInsight = runTinyLlamaInsight(appName, packageName, permissions)
+            if (llmInsight != null) {
+                cache.put(packageName, llmInsight)
+                return PermissionInsightResult.Success(llmInsight)
+            }
         }
 
         val insight = runHeuristicModel(
             appName = appName,
             packageName = packageName,
             permissions = permissions,
-            llmIssue = tinyLlamaClient.lastKnownIssue()
+            llmIssue = if (forceHeuristic) "Skipped by user" else tinyLlamaClient.lastKnownIssue()
         )
         cache.put(packageName, insight)
         return PermissionInsightResult.Success(insight)

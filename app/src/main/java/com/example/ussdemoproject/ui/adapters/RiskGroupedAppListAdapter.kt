@@ -77,7 +77,16 @@ class RiskGroupedAppListAdapter(
 
         fun bind(appInfo: AppInfo) {
             binding.appName.text = appInfo.appName
-            binding.appIcon.setImageDrawable(appInfo.icon)
+
+            // SAFE ICON LOADING (NO appInfo.icon ANYMORE)
+            val pm = context.packageManager
+            try {
+                val icon = pm.getApplicationIcon(appInfo.packageName)
+                binding.appIcon.setImageDrawable(icon)
+            } catch (_: Exception) {
+                // fallback optional
+                // binding.appIcon.setImageResource(R.drawable.ic_default_app)
+            }
 
             itemView.setOnClickListener {
                 val intent = Intent(context, AppDetailActivity::class.java).apply {

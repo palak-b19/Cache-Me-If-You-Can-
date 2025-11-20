@@ -130,7 +130,7 @@ class TinyLlamaInsightClient(private val context: Context) {
                     assetName.contains("genai_config") -> appContext.getString(R.string.tinyllama_config_missing)
                     else -> appContext.getString(R.string.tinyllama_asset_missing, assetName)
                 }
-                Log.e("TinyLlama", "Missing asset $assetName: $lastIssue")
+//                Log.e("TinyLlama", "Missing asset $assetName: $lastIssue")
                 return null
             }
 
@@ -141,7 +141,7 @@ class TinyLlamaInsightClient(private val context: Context) {
 
             if (!copyAsset(assetPath, destination)) {
                 lastIssue = appContext.getString(R.string.tinyllama_asset_copy_failed, assetName)
-                Log.e("TinyLlama", "Failed to copy asset $assetName to ${destination.absolutePath}: $lastIssue")
+//                Log.e("TinyLlama", "Failed to copy asset $assetName to ${destination.absolutePath}: $lastIssue")
                 return null
             }
         }
@@ -158,7 +158,7 @@ class TinyLlamaInsightClient(private val context: Context) {
             }
             true
         } catch (ex: Exception) {
-            Log.e("TinyLlama", "Error copying asset $assetPath to ${destination.absolutePath}", ex)
+//            Log.e("TinyLlama", "Error copying asset $assetPath to ${destination.absolutePath}", ex)
             false
         }
     }

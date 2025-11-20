@@ -172,6 +172,9 @@ class   AppDetailActivity : AppCompatActivity() {
         binding.insightTimestamp.text =
             getString(R.string.insight_updated_at, formatTimestamp(insight.generatedAt))
 
+        val sourceText = if (insight.source == InsightSource.LLM) "AI Model" else "Heuristic"
+        binding.insightSource.text = "Source: $sourceText"
+
         binding.insightCacheBadge.isVisible = insight.fromCache
 
         // RATIONALE LIST

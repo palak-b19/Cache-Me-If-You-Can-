@@ -11,7 +11,7 @@
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/background</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
         <!-- Background color. -->
         <item name="android:windowBackground">@color/background</item>
         <item name="android:colorBackground">@color/background</item>

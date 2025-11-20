@@ -28,6 +28,8 @@
     
     <color name="risk_badge_text">#FFFFFF</color>
     <color name="risk_card_surface">#FFFFFF</color>
+    <color name="divider">#E5E7EB</color>
+    <color name="button_background">#1F2937</color>
     
     <!-- Legacy mappings for compatibility -->
     <color name="purple_200">@color/primary</color>

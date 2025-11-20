@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
@@ -37,6 +39,7 @@ class AppListActivity : AppCompatActivity() {
         setupThemeToggle()
         setupRecyclerView()
         loadApps()
+        setupSearch()
     }
 
     // -----------------------------------------------------------
@@ -134,5 +137,30 @@ class AppListActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    // -----------------------------------------------------------
+    // SEARCH LOGIC
+    // -----------------------------------------------------------
+    private fun setupSearch() {
+        binding.searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterApps(s.toString())
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun filterApps(query: String) {
+        val filtered = if (query.isBlank()) {
+            allApps
+        } else {
+            allApps.filter {
+                it.appName.contains(query, ignoreCase = true) ||
+                        it.packageName.contains(query, ignoreCase = true)
+            }
+        }
+        adapter.updateData(filtered)
     }
 }

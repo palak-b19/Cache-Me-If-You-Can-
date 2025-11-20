@@ -1,5 +1,6 @@
 package com.example.ussdemoproject.ui
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -8,8 +9,6 @@ import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.example.ussdemoproject.databinding.ActivityAppListBinding
 import com.example.ussdemoproject.models.AppInfo
 import com.example.ussdemoproject.ui.adapters.AppListAdapter
@@ -22,20 +21,7 @@ class AppListActivity : AppCompatActivity() {
     private var allApps: List<AppInfo> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        // ------------------------------------------------------------------
-        // SECURE THEME PREFERENCES - ENCRYPTED SHARED PREFS
-        // ------------------------------------------------------------------
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-
-        prefs = EncryptedSharedPreferences.create(
-            "app_prefs",
-            masterKeyAlias,
-            this,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
+        prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         applyTheme()
 
         super.onCreate(savedInstanceState)
@@ -48,9 +34,7 @@ class AppListActivity : AppCompatActivity() {
         setupSearch()
     }
 
-    // ----------------------------------------------------------------------
-    // THEME SYSTEM
-    // ----------------------------------------------------------------------
+    // THEME LOGIC
     private fun applyTheme() {
         val isDark = prefs.getBoolean("dark_mode", false)
         AppCompatDelegate.setDefaultNightMode(
@@ -83,9 +67,6 @@ class AppListActivity : AppCompatActivity() {
         binding.themeToggleBtn.setImageResource(icon)
     }
 
-    // ----------------------------------------------------------------------
-    // LIST SETUP
-    // ----------------------------------------------------------------------
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = AppListAdapter(this, emptyList())
@@ -107,7 +88,7 @@ class AppListActivity : AppCompatActivity() {
                 AppInfo(
                     appName = app.loadLabel(pm).toString(),
                     packageName = app.packageName,
-                    permissions = permissions   // ✅ no icon here
+                    permissions = permissions
                 )
             }
             .sortedBy { it.appName.lowercase() }
@@ -115,17 +96,13 @@ class AppListActivity : AppCompatActivity() {
         adapter.updateData(allApps)
     }
 
-    // ----------------------------------------------------------------------
-    // SEARCH SYSTEM
-    // ----------------------------------------------------------------------
     private fun setupSearch() {
         binding.searchBar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun afterTextChanged(s: Editable?) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 filterApps(s.toString())
             }
+            override fun afterTextChanged(s: Editable?) {}
         })
     }
 

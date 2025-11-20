@@ -25,7 +25,7 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Date
 
-class AppDetailActivity : AppCompatActivity() {
+class   AppDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAppDetailBinding
     private val insightEngine by lazy { PermissionInsightEngine(this) }

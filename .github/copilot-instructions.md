@@ -1,9 +1,11 @@
 # Cache-Me-If-You-Can AI Instructions
 
 ## Project Overview
+
 Android privacy helper app that analyzes installed applications to provide on-device risk insights using a local LLM (TinyLlama) via ONNX Runtime GenAI, with a heuristic fallback.
 
 ## Architecture & Core Components
+
 - **Insight Engine**: `PermissionInsightEngine` (`app/src/main/java/com/example/ussdemoproject/ai/`) is the central orchestrator. It manages:
   - **Caching**: In-memory `LruCache` (6-hour TTL) to avoid redundant processing.
   - **Strategy**: Tries LLM first, falls back to heuristics if unavailable/fails.
@@ -13,6 +15,7 @@ Android privacy helper app that analyzes installed applications to provide on-de
 - **UI Layer**: `AppDetailActivity` consumes `PermissionInsightResult` via Kotlin Coroutines (`lifecycleScope`).
 
 ## Critical Developer Workflows
+
 - **Initial Setup**: You MUST run `scripts/download_tinyllama_assets.ps1` (PowerShell) to fetch the TinyLlama ONNX model and the GenAI AAR.
   - Without this, the app builds but runs in "Heuristic Only" mode.
 - **Build**: Standard Gradle: `./gradlew.bat assembleDebug`.
@@ -21,6 +24,7 @@ Android privacy helper app that analyzes installed applications to provide on-de
   - `PermissionInsightResult.Unavailable` or `llmUnavailableReason` in the UI indicates fallback triggers.
 
 ## Coding Conventions & Patterns
+
 - **Async/Concurrency**: Use `Dispatchers.Default` for AI inference. Never block the main thread with `PermissionInsightEngine.analyze`.
 - **LLM Output Handling**:
   - The LLM is prompted to return JSON.
@@ -30,5 +34,8 @@ Android privacy helper app that analyzes installed applications to provide on-de
 - **ViewBinding**: Use `ActivityAppDetailBinding` patterns for UI updates.
 
 ## External Dependencies
+
 - **ONNX Runtime GenAI**: Provided as a local AAR (`libs/onnxruntime-genai-android-0.11.0.aar`).
 - **TinyLlama**: 1.1B Chat model (quantized int4) loaded from app assets.
+
+update this file when changes are made in other files

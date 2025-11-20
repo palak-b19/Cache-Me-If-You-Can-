@@ -4,6 +4,7 @@
     <string name="risk_level_low">Low risk</string>
     <string name="risk_level_medium">Medium risk</string>
     <string name="risk_level_high">High risk</string>
+    <string name="risk_level_unknown">Computing risk...</string>
     <string name="risk_score_template">%1$d / 100</string>
     <string name="insight_rationale_header">Why we think this</string>
     <string name="insight_confidence_template">Confidence %1$d%%</string>

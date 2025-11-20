@@ -23,7 +23,7 @@
         android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android.contentDescription="@string/toggle_theme"
-        tools:src="@android:drawable/ic_menu_sort_by_size" />
+        tools:src="@drawable/ic_moon" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

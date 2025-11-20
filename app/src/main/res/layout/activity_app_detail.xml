@@ -160,9 +160,18 @@
                     android:orientation="vertical"
                     android:layout_marginTop="8dp" />
 
+                <TextView
+                    android:id="@+id/insightSource"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:fontFamily="@font/montserrat_regular" />
+
                 <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 

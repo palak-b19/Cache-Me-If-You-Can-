@@ -61,7 +61,7 @@ class RiskGroupedAppListAdapter(
 
     fun updateData(newApps: List<AppInfo>) {
         this.originalData = newApps
-        val grouped = newApps.groupBy { it.riskLevel ?: RiskLevel.LOW }
+        val grouped = newApps.groupBy { it.riskLevel ?: RiskLevel.UNKNOWN }
 
         val newItems = mutableListOf<ListItem>()
         grouped.entries.sortedByDescending { it.key.ordinal }.forEach { (riskLevel, apps) ->
@@ -83,6 +83,9 @@ class RiskGroupedAppListAdapter(
                 val intent = Intent(context, AppDetailActivity::class.java).apply {
                     putExtra("appName", appInfo.appName)
                     putExtra("packageName", appInfo.packageName)
+                    appInfo.permissions?.let {
+                        putStringArrayListExtra("permissions", ArrayList(it))
+                    }
                 }
                 context.startActivity(intent)
             }

@@ -25,6 +25,8 @@
     <color name="risk_medium_bg">#FFFBEB</color> <!-- Amber 50 -->
     <color name="risk_high">#EF4444</color> <!-- Red 500 -->
     <color name="risk_high_bg">#FEF2F2</color> <!-- Red 50 -->
+    <color name="risk_unknown">#9CA3AF</color> <!-- Gray 400 -->
+    <color name="risk_unknown_bg">#F3F4F6</color> <!-- Gray 100 -->
     
     <color name="risk_badge_text">#FFFFFF</color>
     <color name="risk_card_surface">#FFFFFF</color>

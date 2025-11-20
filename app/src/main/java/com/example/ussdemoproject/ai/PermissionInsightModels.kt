@@ -8,6 +8,7 @@ enum class RiskLevel(
     @StringRes val labelRes: Int,
     @ColorRes val colorRes: Int
 ) {
+    UNKNOWN(R.string.risk_level_unknown, R.color.risk_unknown),
     LOW(R.string.risk_level_low, R.color.risk_low),
     MEDIUM(R.string.risk_level_medium, R.color.risk_medium),
     HIGH(R.string.risk_level_high, R.color.risk_high)

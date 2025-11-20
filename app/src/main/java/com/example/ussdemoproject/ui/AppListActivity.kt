@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.ussdemoproject.R
 import com.example.ussdemoproject.ai.PermissionInsightEngine
 import com.example.ussdemoproject.ai.PermissionInsightResult
 import com.example.ussdemoproject.databinding.ActivityAppListBinding
@@ -70,9 +71,9 @@ class AppListActivity : AppCompatActivity() {
 
     private fun updateThemeIcon(isDark: Boolean) {
         val icon = if (isDark) {
-            android.R.drawable.ic_menu_day
+            R.drawable.ic_sun
         } else {
-            android.R.drawable.ic_menu_sort_by_size
+            R.drawable.ic_moon
         }
         binding.themeToggleBtn.setImageResource(icon)
     }

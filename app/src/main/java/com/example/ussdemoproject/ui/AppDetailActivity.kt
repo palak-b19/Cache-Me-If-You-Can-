@@ -145,7 +145,6 @@ class   AppDetailActivity : AppCompatActivity() {
             when (result) {
                 is PermissionInsightResult.Success -> {
                     renderInsight(result.insight)
-                    result.insight.llmUnavailableReason?.let { showUnavailableMessage(it) }
                 }
                 is PermissionInsightResult.Unavailable -> {
                     showUnavailableMessage(

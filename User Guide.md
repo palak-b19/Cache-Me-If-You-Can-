@@ -5,12 +5,12 @@ The **Permissions Manager App** helps users understand, evaluate, and control th
 
 This app solves that problem by:
 
-- Scanning app permissions  
-- Explaining why an app may need them  
-- Generating a **risk score** using a Large Language Model (LLM)  
-- Providing actionable recommendations to improve privacy and security  
+- Inspecting and noting the app permissions
+- Giving information about why an app needs a certain permission
+- Generating a risk score and explaining the risk label
+- Providing actionable recommendations to improve privacy and security
 
-This guide explains how to use the app effectively.
+This guide explains how to use the app effectively, to a new user.
 
 ---
 
@@ -53,8 +53,7 @@ Selecting any app opens its details view, which includes:
 
 ### 4.1 Permissions Breakdown
 A list of all permissions requested by the selected app.
-
-(Not grouped here manually, because the LLM-based analysis already gives category-wise distinction.)
+(Not grouped here, because the LLM-based analysis already gives category-wise distinction.)
 
 #### High-sensitivity permissions:
 - Camera  
@@ -117,24 +116,22 @@ The LLM provides a human-readable explanation, including:
 ---
 
 ## 6. Recommendations Screen
-After generating the risk score, the app provides a **Recommendations Panel**, including:
+After generating the risk score, the app provides a Recommendations Panel, including:
+-Permissions you should consider revoking
+-Permissions that are not essential
+-Suggested safer alternatives (if any)
 
-- Permissions you should consider revoking  
-- Permissions that are not essential  
-- Suggested safer alternatives (if any)  
-- Category-specific advice (e.g., *Messaging apps usually need contacts, but games do not.*)
 
 ---
 
-## 7. Managing Permissions — “Manage Permissions”
-You can directly control permissions from the app.  
-This option opens your device’s built-in permissions manager, where you can edit permissions and then return to the app to check the updated risk score.
+## 7. Managing Permissions — click “Manage Permissions”
+You can directly control permissions from the app. This app leads you to your permissions manager on your Android device in order to modify the permissions and then you can check the risk and understand permissions using the LLM-based risk score analysis. 
 
-### 7.1 Revoking a Permission
+### 7.1 Revoking a Permission  (after clicking Manage Permissions)
 - Tap the permission you want to revoke.  
 - Tap **Deny**, **Don’t Allow**, or toggle it off.
 
-### 7.2 Granting a Permission
+### 7.2 Granting a Permission  (after clicking Manage Permissions)
 - Tap **Enable Permission**.  
 - Tap **Allow**.
 
@@ -152,7 +149,6 @@ Resets all permissions to your device’s recommended defaults.
 
 ### App Not Appearing in List
 - Restart the Permissions Manager app.  
-- Trigger a re-scan.
 
 ### LLM Error
 - This may occur due to temporary service issues.  
@@ -161,7 +157,6 @@ Resets all permissions to your device’s recommended defaults.
 ---
 
 ## 9. Conclusion
-The Permissions Manager app empowers users to make informed decisions about their digital privacy. By combining transparent permission reporting with an LLM-driven risk analysis engine, it helps users understand exactly what apps are doing and whether those actions align with security expectations.
-
+This Permissions Manager app helps a user to identify why a particular application needs a permission, how it affects an application and what sort of risks can be avoided. It provides a risk score as well using an LLM-based scanning and analysis. The summary provides risk categorisation - Low, Medium, High - depending on the level of risk that arises due to factors like how sensitive the granted permissions are and what sort of information do the permissions allow the application to access. It also contains the confidence level for the risk assessment (as it is LLM-generated). The application tends to the needs of naive, medium and technologically sound users as well. 
 ---
 

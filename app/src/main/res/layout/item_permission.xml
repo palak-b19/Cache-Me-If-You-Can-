@@ -32,12 +32,14 @@
 
             <TextView
                 android:id="@+id/permissionTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:textSize="18sp"
                 android:textColor="@color/text_primary"
-                android:fontFamily="@font/montserrat_semibold" />
+                android:fontFamily="@font/montserrat_semibold"
+                android:ellipsize="end"
+                android:maxLines="2" />
         </LinearLayout>
 
         <!-- Permission description -->

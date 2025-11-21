@@ -31,10 +31,21 @@ class PermissionAdapter(
             .replace("_", " ")
             .lowercase()
             .replaceFirstChar { it.uppercase() }
+        // Detect hex-like tokens and show a friendly masked label instead of the raw value
+        val cleanedTitle = readableTitle.replace("\\s".toRegex(), "")
+        val hexLikeRegex = Regex("^[0-9a-fA-F]{32,}\$")
+        val isHexToken = hexLikeRegex.matches(cleanedTitle)
 
-        holder.binding.permissionTitle.text = readableTitle
+        val maxDisplayLength = 48
+        val displayTitle = when {
+            isHexToken -> "Token (hidden)"
+            readableTitle.length > maxDisplayLength -> readableTitle.take(maxDisplayLength - 3) + "..."
+            else -> readableTitle
+        }
+
+        holder.binding.permissionTitle.text = displayTitle
         holder.binding.permissionDescription.text =
-            "This app uses $readableTitle permission."
+            if (isHexToken) "This app declares a token-like permission." else "This app uses $displayTitle permission."
 
         holder.binding.permissionTitle.typeface = FontProvider.poppinsSemi(context)
         holder.binding.permissionDescription.typeface = FontProvider.poppinsRegular(context)

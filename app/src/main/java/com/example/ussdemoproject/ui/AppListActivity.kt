@@ -118,7 +118,8 @@ class AppListActivity : AppCompatActivity() {
                 val result = insightEngine.analyze(
                     appName = appInfo.appName,
                     packageName = appInfo.packageName,
-                    permissions = appInfo.permissions ?: emptyList()
+                    permissions = appInfo.permissions ?: emptyList(),
+                    forceHeuristic = true
                 )
 
                 if (result is PermissionInsightResult.Success) {

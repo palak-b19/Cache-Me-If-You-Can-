@@ -37,8 +37,15 @@ class PermissionInsightEngine(context: Context) {
 
             val llmInsight = runTinyLlamaInsight(appName, packageName, permissions)
             if (llmInsight != null) {
-                cache.put(packageName, llmInsight)
-                return PermissionInsightResult.Success(llmInsight)
+                // Check for generic/hallucinated rationale from the prompt example
+                val isGenericResponse = llmInsight.rationale.any { reason ->
+                    reason.contains("Short reason", ignoreCase = true)
+                }
+
+                if (!isGenericResponse) {
+                    cache.put(packageName, llmInsight)
+                    return PermissionInsightResult.Success(llmInsight)
+                }
             }
         }
 
@@ -46,7 +53,9 @@ class PermissionInsightEngine(context: Context) {
             appName = appName,
             packageName = packageName,
             permissions = permissions,
-            llmIssue = if (forceHeuristic) "Skipped by user" else tinyLlamaClient.lastKnownIssue()
+            llmIssue = if (forceHeuristic) "Skipped by user" else {
+                tinyLlamaClient.lastKnownIssue() ?: "LLM returned generic response"
+            }
         )
         cache.put(packageName, insight)
         return PermissionInsightResult.Success(insight)

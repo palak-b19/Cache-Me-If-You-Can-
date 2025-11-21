@@ -115,12 +115,10 @@ The LLM provides a human-readable explanation, including:
 
 ---
 
-## 6. Recommendations Screen
-After generating the risk score, the app provides a Recommendations Panel, including:
+## 6. Recommendations- extrapolating the LLM-based analysis
+After generating the risk score, the app provides certain recommendations, including:
 -Permissions you should consider revoking
--Permissions that are not essential
--Suggested safer alternatives (if any)
-
+-Permissions that are not essential and are high-risk that could leak very personal information 
 
 ---
 
@@ -150,7 +148,8 @@ Resets all permissions to your device’s recommended defaults.
 ### App Not Appearing in List
 - Restart the Permissions Manager app.  
 
-### LLM Error
+### LLM Analysis Generation
+The risk score and analysis that is generated using the LLM involves input of information like the number of permissions granted, grouped sets of permissions granted, risk of each permission etc. All these factors lead to the LLM taking some time to generate the risk score and assessment. If the risk score is not visible after 2-3 minutes max, then you can do the following: 
 - This may occur due to temporary service issues.  
 - Retry after a few minutes.
 

@@ -22,18 +22,4 @@ Privacy helper that surfaces each installed app, drills into its declared permis
 3. Rebuild; the first app launch copies the ONNX file into internal storage and boots ONNX Runtime.
 4. If the download script fails (offline, rate limited, etc.), manually fetch the same files and place them in the directories above. Until then, the engine falls back to the heuristic scorer and shows the reason in the UI banner.
 
-## Building & testing
-From the repo root:
-
-```powershell
-Set-Location -Path "C:\Users\Sidhartha Garg\Documents\GitHub\Cache-Me-If-You-Can-"
-.\gradlew.bat assembleDebug
-```
-
-Run unit tests:
-
-```powershell
-Set-Location -Path "C:\Users\Sidhartha Garg\Documents\GitHub\Cache-Me-If-You-Can-"
-.\gradlew.bat test
-```
 
